@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista de Equipos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4caf50, #1d3c31);
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 15px;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 12px 15px;
+            color: #495057;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            margin: 0 3px;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3, #004494);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            border-radius: 8px;
+            margin: 20px;
+            padding: 15px 20px;
+            font-weight: 500;
+        }
+
+        .table-responsive {
+            border-radius: 0 0 15px 15px;
+            overflow: hidden;
+        }
+
+        .actions-cell {
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        .search-box {
+            margin: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .search-box input {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-nuevo { background-color: #28a745; color: white; }
+        .status-usado { background-color: #ffc107; color: #212529; }
+        .status-mantenimiento { background-color: #17a2b8; color: white; }
+        .status-baja { background-color: #dc3545; color: white; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .btn-sm {
+                padding: 4px 8px;
+                font-size: 0.75rem;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .card-header .btn {
+                width: 100%;
+            }
+
+            .actions-cell {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .actions-cell .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-list"></i> Lista de Equipos</h3>
+                <a th:href="@{/veragenda}" class="btn btn-success">
+                    <i class="fas fa-plus-circle"></i> Agregar Nuevo Equipo
+                </a>
+            </div>
+            <div class="card-body">
+                <div th:if="${mensaje}" th:class="${'alert ' + (tipoMensaje == 'success' ? 'alert-success' : 'alert-danger')}" 
+                     role="alert">
+                    <i class="fas" th:classappend="${tipoMensaje == 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span th:text="${mensaje}"></span>
+                </div>
+
+                <div class="search-box">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="searchInput" 
+                                   placeholder="Buscar por nombre, ID, categoría o marca...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover" id="equiposTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>ID Equipo</th>
+                                <th>Categoría</th>
+                                <th>Marca</th>
+                                <th>Fecha Adquisición</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Observaciones</th>
+                                <th class="actions-cell">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="agenda : ${listaAgenda}">
+                                <td th:text="${agenda.id}"></td>
+                                <td th:text="${agenda.nombre}"></td>
+                                <td th:text="${agenda.equipoId}"></td>
+                                <td th:text="${agenda.categoria}"></td>
+                                <td th:text="${agenda.marca}"></td>
+                                <td th:text="${#temporals.format(agenda.fechaAdquisicion, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${#numbers.formatDecimal(agenda.precio, 1, 2)}"></td>
+                                <td>
+                                    <span class="status-badge" 
+                                          th:classappend="${'status-' + #strings.toLowerCase(#strings.replace(agenda.estado, ' ', '-'))}"
+                                          th:text="${agenda.estado}"></span>
+                                </td>
+                                <td th:text="${agenda.observaciones}"></td>
+                                <td class="actions-cell">
+                                    <a th:href="@{/agenda/editar/{id}(id=${agenda.id})}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-danger" 
+                                            th:onclick="'confirmarEliminar(' + ${agenda.id} + ')'">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(listaAgenda)}">
+                                <td colspan="10" class="text-center py-4">
+                                    <i class="fas fa-info-circle text-muted"></i>
+                                    No hay equipos registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este equipo? Esta acción no se puede deshacer.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <a id="confirmarEliminarBtn" href="#" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+        function confirmarEliminar(id) {
+            $('#confirmarEliminarBtn').attr('href', '/agenda/eliminar/' + id);
+            $('#confirmarEliminarModal').modal('show');
+        }
+
+        $(document).ready(function() {
+            $("#searchInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#equiposTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

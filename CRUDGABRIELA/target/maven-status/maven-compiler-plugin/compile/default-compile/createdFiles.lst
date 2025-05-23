@@ -1,0 +1,4 @@
+com\crudgabriela\app\controlador\AgendaController.class
+com\crudgabriela\app\entidades\Agenda.class
+com\crudgabriela\app\repositorio\AgendaRepositorio.class
+com\crudgabriela\app\CrudgabrielaApplication.class
